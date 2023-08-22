@@ -1,5 +1,6 @@
 import os
 import pickle
+import atexit
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.embeddings import OpenAIEmbeddings
@@ -7,17 +8,28 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
-from langchain.callbacks import get_openai_callback
 from streamlit_chat import message
+
 
 def conversational_chat(query, docs, chain):
     response = chain.run(input_documents=docs, question=query)
     st.session_state['history'].append((query, response))
     return response
 
+
+def delete_pickle_files():
+    # Iterate through all files in the current directory
+    for filename in os.listdir('.'):
+        if filename.endswith('.pkl'):
+            os.remove(filename)
+
+
 def main():
-    st.markdown("<h1 style='text-align: center;margin: 10px 0px 10px 0px;background-color:black; border-radius:10px ; color: white;'>Chat with PDF 📄</h1>", unsafe_allow_html=True)
-    os.environ["OPENAI_API_KEY"] = "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"
+    st.markdown(""
+                "<h1 style='text-align: center;margin: 10px 0px 10px 0px;background-color:black;"
+                "border-radius:7px ; color: white;position: relative;z-index:1000'>"
+                "Chat with PDF 📄</h1>", unsafe_allow_html=True)
+    os.environ["OPENAI_API_KEY"] = "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"
     pdf = st.sidebar.file_uploader("Upload your PDF", type='pdf')
 
     if pdf is not None:
@@ -60,23 +72,24 @@ def main():
         response_container = st.container()
         container = st.container()
 
-        with container:
-            with st.form(key='my_form', clear_on_submit=True):
-                user_input = st.text_input("Query:", placeholder="Talk to your PDF data here (:", key='input')
-                submit_button = st.form_submit_button(label='Send')
+        user_input = st.chat_input("Your Query:")
 
-            if submit_button and user_input:
-                docs = docsearch.similarity_search(query=user_input, k=3)
-                output = conversational_chat(user_input, docs, chain)
+        if user_input:
+            # Process user input and generate bot response
+            docs = docsearch.similarity_search(query=user_input, k=3)
+            output = conversational_chat(user_input, docs, chain)
 
-                st.session_state['past'].append(user_input)
-                st.session_state['generated'].append(output)
+            st.session_state['past'].append(user_input)
+            st.session_state['generated'].append(output)
 
         if st.session_state['generated']:
             with response_container:
                 for i in range(len(st.session_state['generated'])):
                     message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="big-smile")
-                    message(st.session_state["generated"][i], key=str(i), avatar_style="thumbs")
+                    message(st.session_state["generated"][i], key=str(i), avatar_style="bottts")
+
+        atexit.register(delete_pickle_files)
+
 
 if __name__ == "__main__":
     main()
