@@ -29,7 +29,7 @@ def main():
                 "<h1 style='text-align: center;margin: 10px 0px 10px 0px;background-color:black;"
                 "border-radius:7px ; color: white;position: relative;z-index:1000'>"
                 "Chat with PDF 📄</h1>", unsafe_allow_html=True)
-    os.environ["OPENAI_API_KEY"] = "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"
+    os.environ["OPENAI_API_KEY"] = "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"
     pdf = st.sidebar.file_uploader("Upload your PDF", type='pdf')
 
     if pdf is not None:
