@@ -28,7 +28,6 @@ def main():
                 "<h1 style='text-align: center;margin: 10px 0px 10px 0px;background-color:black;"
                 "border-radius:7px ; color: white;position: relative;z-index:1000'>"
                 "Chat with PDF 📄</h1>", unsafe_allow_html=True)
-    os.environ['OPENAI_API_KEY'] = "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"
     pdf_list = st.sidebar.file_uploader("Upload your PDF", type='pdf', accept_multiple_files=True)
     if len(pdf_list) > 0:
         texts = []
