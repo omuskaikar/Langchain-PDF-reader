@@ -29,14 +29,22 @@ def main():
                 "border-radius:7px ; color: white;position: relative;z-index:1000'>"
                 "Chat with PDF 📄</h1>", unsafe_allow_html=True)
     pdf_list = st.sidebar.file_uploader("Upload your PDF", type='pdf', accept_multiple_files=True)
+
+    os.environ['OPENAI_API_KEY'] = "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"
     if len(pdf_list) > 0:
         texts = []
+        names = []
         process = st.sidebar.button("Process")
-        store_name = "embeddings"
+        store_name = ""
+        for pdf in pdf_list:
+            names.append(pdf.name[0:-4])
+        names.sort()
+        for name in names:
+            store_name += name
         if os.path.exists(f"{store_name}.pkl"):
             with open(f"{store_name}.pkl", "rb") as f:
                 docsearch = pickle.load(f)
-        if process:
+        elif process:
             delete_pickle_files()
             raw_text = ''
             for pdf in pdf_list:
