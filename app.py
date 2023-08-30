@@ -29,8 +29,6 @@ def main():
                 "border-radius:7px ; color: white;position: relative;z-index:1000'>"
                 "Chat with PDF 📄</h1>", unsafe_allow_html=True)
     pdf_list = st.sidebar.file_uploader("Upload your PDF", type='pdf', accept_multiple_files=True)
-
-    os.environ['OPENAI_API_KEY'] = "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"
     if len(pdf_list) > 0:
         texts = []
         names = []
